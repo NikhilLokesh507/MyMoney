@@ -18,12 +18,12 @@ import java.util.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Allocation {
 
-    Map<Asset, Double> assetDistribution;
+    Map<Asset, Long> assetDistribution;
 
     @Getter
-    Double total;
+    Long total;
 
-    public Map<Asset, Double> getAllocation() {
+    public Map<Asset, Long> getAllocation() {
         return this.assetDistribution;
     }
 
@@ -38,9 +38,9 @@ public class Allocation {
     }
 
     @Builder
-    public static Allocation of(Map<Asset, Double> assetDistribution) {
-        Double total = 0D;
-        for (Map.Entry<Asset, Double> entry : assetDistribution.entrySet()) {
+    public static Allocation of(Map<Asset, Long> assetDistribution) {
+        Long total = 0L;
+        for (Map.Entry<Asset, Long> entry : assetDistribution.entrySet()) {
             total += entry.getValue();
         }
         return new Allocation(assetDistribution, total);
@@ -52,11 +52,11 @@ public class Allocation {
         if (!strings[0].equals("ALLOCATE")) {
             throw new NoSuchElementException();
         }
-        Double equity = Double.parseDouble(strings[1]);
-        Double debt = Double.parseDouble(strings[2]);
-        Double gold = Double.parseDouble(strings[3]);
-        Double total = equity + debt + gold;
-        Map<Asset, Double> assetDistributionMap = new HashMap<>();
+        Long equity = Long.parseLong(strings[1]);
+        Long debt = Long.parseLong(strings[2]);
+        Long gold = Long.parseLong(strings[3]);
+        Long total = equity + debt + gold;
+        Map<Asset, Long> assetDistributionMap = new HashMap<>();
         assetDistributionMap.put(Asset.EQUITY, equity);
         assetDistributionMap.put(Asset.DEBT, debt);
         assetDistributionMap.put(Asset.GOLD, gold);
@@ -65,17 +65,17 @@ public class Allocation {
 
     @Builder
     public static Allocation monthlyChangeOf(Allocation allocation, SIP sip, Change change, Month month) {
-        Map<Asset, Double> assetDoubleMap = allocation.getAllocation();
-        Map<Asset, Double> sipMap = sip.getSip();
+        Map<Asset, Long> assetDoubleMap = allocation.getAllocation();
+        Map<Asset, Long> sipMap = sip.getSip();
         Map<Asset, Percentage> changeMap = change.getChange();
-        Map<Asset, Double> newAllocation = new HashMap<>(assetDoubleMap);
-        Double total = 0D;
+        Map<Asset, Long> newAllocation = new HashMap<>(assetDoubleMap);
+        Long total = 0L;
 
         if (!month.equals(Month.JANUARY)) {
-            for (Map.Entry<Asset, Double> entry : sipMap.entrySet()) {
+            for (Map.Entry<Asset, Long> entry : sipMap.entrySet()) {
                 if (assetDoubleMap.containsKey(entry.getKey())) {
-                    double value = assetDoubleMap.get(entry.getKey()) + entry.getValue();
-                    newAllocation.put(entry.getKey(), (double) Math.round(value));
+                    long value = assetDoubleMap.get(entry.getKey()) + entry.getValue();
+                    newAllocation.put(entry.getKey(), value);
                 } else {
                     newAllocation.put(entry.getKey(), entry.getValue());
                 }
@@ -83,10 +83,10 @@ public class Allocation {
         }
 
 
-        for (Map.Entry<Asset, Double> entry : newAllocation.entrySet()) {
+        for (Map.Entry<Asset, Long> entry : newAllocation.entrySet()) {
             Asset asset = entry.getKey();
             double value = entry.getValue() * (1 + changeMap.get(asset).getValue() / 100D);
-            double roundValue = (double) Math.round(value);
+            long roundValue = Math.round(value);
             total += roundValue;
             newAllocation.put(asset, roundValue);
         }
@@ -97,12 +97,12 @@ public class Allocation {
 
     @Builder
     public static Allocation rebalanceOf(Allocation allocation, Allocation rebalancedAllocation) {
-        Double total = allocation.getTotal();
-        Map<Asset, Double> allocationMap = new HashMap<>();
-        Map<Asset, Double> rMap = new HashMap<>(rebalancedAllocation.getAllocation());
-        for (Map.Entry<Asset, Double> entry : rMap.entrySet()) {
+        Long total = allocation.getTotal();
+        Map<Asset, Long> allocationMap = new HashMap<>();
+        Map<Asset, Long> rMap = new HashMap<>(rebalancedAllocation.getAllocation());
+        for (Map.Entry<Asset, Long> entry : rMap.entrySet()) {
             double value = ((double) entry.getValue() / rebalancedAllocation.getTotal()) * total;
-            allocationMap.put(entry.getKey(), (double) Math.round(value));
+            allocationMap.put(entry.getKey(), Math.round(value));
         }
         return Allocation.builder().assetDistribution(allocationMap).build();
     }
