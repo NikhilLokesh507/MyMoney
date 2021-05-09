@@ -4,10 +4,7 @@ import com.geektrust.mymoney.market.Change;
 import com.geektrust.mymoney.portfolio.Asset;
 import com.geektrust.mymoney.portfolio.statement.Percentage;
 import com.geektrust.mymoney.portfolio.statement.SIP;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.*;
@@ -15,6 +12,7 @@ import java.util.*;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@EqualsAndHashCode
 public class Allocation {
 
     Map<Asset, Double> assetDistribution;
@@ -42,7 +40,7 @@ public class Allocation {
         for (Asset asset : list) {
             value.append(Math.round(assetDistribution.get(asset))).append(" ");
         }
-        return value.toString();
+        return value.toString().trim();
     }
 
     @Builder

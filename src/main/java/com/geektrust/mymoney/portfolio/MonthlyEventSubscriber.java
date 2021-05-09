@@ -8,5 +8,5 @@ public interface MonthlyEventSubscriber {
 
     void printBalance(Month month);
 
-    void printRebalancedBalance();
+    String rebalancedBalance();
 }

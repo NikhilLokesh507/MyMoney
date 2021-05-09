@@ -77,18 +77,19 @@ public class PortfolioImpl implements Portfolio {
     }
 
     @Override
-    public void printRebalancedBalance() {
-        if (!canRebalance()) {
-            System.out.println("CANNOT_REBALANCE");
-
-        } else {
+    public String rebalancedBalance() {
+        String result = "CANNOT_REBALANCE";
+        if(canRebalance()) {
             Optional<Record> record = statement.getLastRecord();
             if (record.isPresent()) {
                 Month lastRebalancedMonth = !record.get().getMonth().equals(Month.DECEMBER) ? Month.JUNE : Month.DECEMBER;
                 Optional<Record> rebalancedRecord = statement.getRecordForMonth(lastRebalancedMonth);
-                rebalancedRecord.ifPresent(record1 -> System.out.println(record1.getAllocation()));
+                if (rebalancedRecord.isPresent()) {
+                    result = rebalancedRecord.get().getAllocation().toString();
+                }
             }
         }
+        return result;
     }
 
 

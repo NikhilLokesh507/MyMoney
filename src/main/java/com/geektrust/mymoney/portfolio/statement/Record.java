@@ -49,6 +49,7 @@ public class Record {
         return new Record(Month.JANUARY, previousAllocation);
     }
 
+    @Builder
     public static Record ofChange(Allocation previousAllocation, Change change, Month month) {
         Allocation afterChange = Allocation.postChange(previousAllocation, change);
         return new Record(month, afterChange, previousAllocation, null);

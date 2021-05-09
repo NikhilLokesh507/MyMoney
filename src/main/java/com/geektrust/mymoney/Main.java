@@ -19,29 +19,32 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Allocation allocation = null;
         SIP sip = null;
-        Market market = Market.getInstance();
-        for (String string : commands(args[0])) {
-            String[] strings = string.split(" ");
-            switch (strings[0]) {
-                case "ALLOCATE":
-                    allocation = Allocation.fromString(string);
-                    break;
-                case "SIP":
-                    sip = SIP.fromString(string);
-                    market.setSubscribers(Collections.singletonList(new PortfolioImpl("main", sip, allocation)));
-                    break;
-                case "CHANGE":
-                    market.onEventGenerated(Month.valueOf(strings[4]), Change.fromString(string));
-                    break;
-                case "BALANCE":
-                    market.getSubscribers().forEach(portfolio -> portfolio.printBalance(Month.valueOf(strings[1])));
-                    break;
-                case "REBALANCE":
-                    market.getSubscribers().forEach(MonthlyEventSubscriber::printRebalancedBalance);
-                    break;
-                default:
-                    break;
+        try (Market market = Market.getInstance()) {
+            for (String string : commands(args[0])) {
+                String[] strings = string.split(" ");
+                switch (strings[0]) {
+                    case "ALLOCATE":
+                        allocation = Allocation.fromString(string);
+                        break;
+                    case "SIP":
+                        sip = SIP.fromString(string);
+                        market.setSubscribers(Collections.singletonList(new PortfolioImpl("main", sip, allocation)));
+                        break;
+                    case "CHANGE":
+                        market.onEventGenerated(Month.valueOf(strings[4]), Change.fromString(string));
+                        break;
+                    case "BALANCE":
+                        market.getSubscribers().forEach(portfolio -> portfolio.printBalance(Month.valueOf(strings[1])));
+                        break;
+                    case "REBALANCE":
+                        market.getSubscribers().forEach(subscriber -> System.out.println(subscriber.rebalancedBalance()));
+                        break;
+                    default:
+                        break;
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
