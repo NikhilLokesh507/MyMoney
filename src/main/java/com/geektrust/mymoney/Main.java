@@ -3,8 +3,8 @@ package com.geektrust.mymoney;
 import com.geektrust.mymoney.calender.Month;
 import com.geektrust.mymoney.market.Change;
 import com.geektrust.mymoney.market.Market;
+import com.geektrust.mymoney.portfolio.MonthlyEventSubscriber;
 import com.geektrust.mymoney.portfolio.PortfolioImpl;
-import com.geektrust.mymoney.portfolio.Rebalancer;
 import com.geektrust.mymoney.portfolio.allocation.Allocation;
 import com.geektrust.mymoney.portfolio.statement.SIP;
 
@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -39,14 +37,7 @@ public class Main {
                     market.getSubscribers().forEach(portfolio -> portfolio.printBalance(Month.valueOf(strings[1])));
                     break;
                 case "REBALANCE":
-                    List<Optional<Allocation>> optionalList = market.getSubscribers().stream().map(Rebalancer::rebalance).collect(Collectors.toList());
-                    for (Optional<Allocation> optional : optionalList) {
-                        if (optional.isPresent()) {
-                            System.out.println(optional.get().getAllocation());
-                        } else {
-                            System.out.println("CANNOT_REBALANCE");
-                        }
-                    }
+                    market.getSubscribers().forEach(MonthlyEventSubscriber::printRebalancedBalance);
                     break;
                 default:
                     break;

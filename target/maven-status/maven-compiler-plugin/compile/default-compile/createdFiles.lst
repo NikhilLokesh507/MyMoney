@@ -1,15 +1,16 @@
 com/geektrust/mymoney/portfolio/allocation/Allocation$AllocationBuilder.class
 com/geektrust/mymoney/exchange/CTA.class
-com/geektrust/mymoney/portfolio/Rebalancer.class
 com/geektrust/mymoney/market/Market.class
 com/geektrust/mymoney/portfolio/Asset.class
 com/geektrust/mymoney/calender/Month.class
 com/geektrust/mymoney/portfolio/statement/Record.class
 com/geektrust/mymoney/portfolio/statement/Statement.class
+com/geektrust/mymoney/portfolio/statement/IncorrectBookKeeping.class
 com/geektrust/mymoney/portfolio/PortfolioImpl.class
 com/geektrust/mymoney/market/MonthlyEventGenerator.class
 com/geektrust/mymoney/portfolio/Portfolio.class
 com/geektrust/mymoney/portfolio/statement/Percentage$PercentageBuilder.class
+com/geektrust/mymoney/portfolio/statement/Record$RecordBuilder.class
 com/geektrust/mymoney/portfolio/MonthlyEventSubscriber.class
 com/geektrust/mymoney/portfolio/allocation/Allocation.class
 com/geektrust/mymoney/market/Change.class

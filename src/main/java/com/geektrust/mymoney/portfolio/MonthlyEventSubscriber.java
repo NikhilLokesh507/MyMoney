@@ -7,4 +7,6 @@ public interface MonthlyEventSubscriber {
     void onEventReceived(Month month, Change change);
 
     void printBalance(Month month);
+
+    void printRebalancedBalance();
 }

@@ -15,7 +15,7 @@ import java.util.NoSuchElementException;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class SIP {
-    Map<Asset, Long> sip;
+    Map<Asset, Double> sip;
 
     @Builder
     public static SIP fromString(String string) {
@@ -23,10 +23,10 @@ public class SIP {
         if (!strings[0].equals("SIP")) {
             throw new NoSuchElementException();
         }
-        Long equity = Long.parseLong(strings[1]);
-        Long debt = Long.parseLong(strings[2]);
-        Long gold = Long.parseLong(strings[3]);
-        Map<Asset, Long> sip = new HashMap<>();
+        Double equity = Double.parseDouble(strings[1]);
+        Double debt = Double.parseDouble(strings[2]);
+        Double gold = Double.parseDouble(strings[3]);
+        Map<Asset, Double> sip = new HashMap<>();
         sip.put(Asset.EQUITY, equity);
         sip.put(Asset.DEBT, debt);
         sip.put(Asset.GOLD, gold);

@@ -30,22 +30,19 @@ public class PortfolioImpl implements Portfolio {
 
     public PortfolioImpl(String name, SIP sip, Allocation allocation) {
         this.name = name;
-        this.statement = new Statement(new Record(Month.JANUARY, allocation));
+        this.statement = new Statement(Record.first(allocation));
         this.sip = sip;
         this.allocation = allocation;
     }
 
-    @Override
-    public Optional<Allocation> rebalance() {
+    private Optional<Record> rebalance(Month month) {
         Optional<Record> optional = statement.getLastRecord();
-        Optional<Allocation> optionalAllocation = Optional.empty();
-        if (optional.isPresent() && canRebalance()) {
+        Optional<Record> rebalancedRecord = Optional.empty();
+        if (optional.isPresent()) {
             Record record = optional.get();
-            Allocation rebalancedAllocation = Allocation.rebalanceOf(record.getAllocation(), this.allocation);
-            statement.addRecord(new Record(record.getMonth(), rebalancedAllocation));
-            optionalAllocation = Optional.ofNullable(rebalancedAllocation);
+            rebalancedRecord = Optional.of(Record.rebalanceOf(record, allocation));
         }
-        return optionalAllocation;
+        return rebalancedRecord;
     }
 
     private boolean canRebalance() {
@@ -60,8 +57,17 @@ public class PortfolioImpl implements Portfolio {
     @Override
     public void onEventReceived(Month month, Change change) {
         Optional<Record> optional = statement.getLastRecord();
-        optional.ifPresent(record ->
-                statement.addRecord(new Record(month, Allocation.monthlyChangeOf(record.getAllocation(), sip, change, month))));
+        if (month == Month.JANUARY) {
+            optional.ifPresent(record ->
+                    statement.addRecord(Record.ofChange(record.getAllocation(), change, month)));
+        } else {
+            optional.ifPresent(record ->
+                    statement.addRecord(Record.ofNewMonth(record, sip, change, month)));
+        }
+        if (month == Month.JUNE || month == Month.DECEMBER) {
+            rebalance(month).ifPresent(statement::addRecord);
+        }
+
     }
 
     @Override
@@ -69,4 +75,21 @@ public class PortfolioImpl implements Portfolio {
         Optional<Record> recordOptional = statement.getRecordForMonth(month);
         recordOptional.ifPresent(record -> System.out.println(record.getAllocation()));
     }
+
+    @Override
+    public void printRebalancedBalance() {
+        if (!canRebalance()) {
+            System.out.println("CANNOT_REBALANCE");
+
+        } else {
+            Optional<Record> record = statement.getLastRecord();
+            if (record.isPresent()) {
+                Month lastRebalancedMonth = !record.get().getMonth().equals(Month.DECEMBER) ? Month.JUNE : Month.DECEMBER;
+                Optional<Record> rebalancedRecord = statement.getRecordForMonth(lastRebalancedMonth);
+                rebalancedRecord.ifPresent(record1 -> System.out.println(record1.getAllocation()));
+            }
+        }
+    }
+
+
 }
