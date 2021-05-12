@@ -1,3 +1,4 @@
-/Users/nikhil/Documents/MyMoney/src/test/java/com/geektrust/mymoney/portfolio/TestRecord.java
-/Users/nikhil/Documents/MyMoney/src/test/java/com/geektrust/mymoney/portfolio/TestPortfolio.java
-/Users/nikhil/Documents/MyMoney/src/test/java/com/geektrust/mymoney/portfolio/TestAllocation.java
+/Users/nikhil/Documents/MyMoney/src/test/java/com/geektrust/mymoney/model/portfolio/TestAllocation.java
+/Users/nikhil/Documents/MyMoney/src/test/java/com/geektrust/mymoney/model/portfolio/TestController.java
+/Users/nikhil/Documents/MyMoney/src/test/java/com/geektrust/mymoney/model/portfolio/TestRecord.java
+/Users/nikhil/Documents/MyMoney/src/test/java/com/geektrust/mymoney/model/portfolio/TestPortfolio.java

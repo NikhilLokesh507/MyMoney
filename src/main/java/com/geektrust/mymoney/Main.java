@@ -1,43 +1,40 @@
 package com.geektrust.mymoney;
 
-import com.geektrust.mymoney.calender.Month;
-import com.geektrust.mymoney.market.Change;
-import com.geektrust.mymoney.market.Market;
-import com.geektrust.mymoney.portfolio.MonthlyEventSubscriber;
-import com.geektrust.mymoney.portfolio.PortfolioImpl;
-import com.geektrust.mymoney.portfolio.allocation.Allocation;
-import com.geektrust.mymoney.portfolio.statement.SIP;
+import com.geektrust.mymoney.controller.Controller;
+import com.geektrust.mymoney.controller.ControllerFactory;
+import com.geektrust.mymoney.model.calender.Month;
+import com.geektrust.mymoney.model.market.Change;
+import com.geektrust.mymoney.model.portfolio.allocation.Allocation;
+import com.geektrust.mymoney.model.portfolio.statement.SIP;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        Allocation allocation = null;
-        SIP sip = null;
-        try (Market market = Market.getInstance()) {
+        try {
+            String id = null;
+            Controller controller = ControllerFactory.instance().controller();
             for (String string : commands(args[0])) {
                 String[] strings = string.split(" ");
                 switch (strings[0]) {
                     case "ALLOCATE":
-                        allocation = Allocation.fromString(string);
+                        id = controller.allocate(Allocation.fromString(string));
                         break;
                     case "SIP":
-                        sip = SIP.fromString(string);
-                        market.setSubscribers(Collections.singletonList(new PortfolioImpl("main", sip, allocation)));
+                        controller.registerSip(id, SIP.fromString(string));
                         break;
                     case "CHANGE":
-                        market.onEventGenerated(Month.valueOf(strings[4]), Change.fromString(string));
+                        controller.markChange(Month.valueOf(strings[4]), Change.fromString(string));
                         break;
                     case "BALANCE":
-                        market.getSubscribers().forEach(portfolio -> portfolio.printBalance(Month.valueOf(strings[1])));
+                        controller.printBalance(id, Month.valueOf(strings[1]));
                         break;
                     case "REBALANCE":
-                        market.getSubscribers().forEach(subscriber -> System.out.println(subscriber.rebalancedBalance()));
+                        controller.printRebalancedAllocation(id);
                         break;
                     default:
                         break;

@@ -1,3 +1,4 @@
-com/geektrust/mymoney/portfolio/TestRecord.class
-com/geektrust/mymoney/portfolio/TestPortfolio.class
-com/geektrust/mymoney/portfolio/TestAllocation.class
+com/geektrust/mymoney/model/portfolio/TestController.class
+com/geektrust/mymoney/model/portfolio/TestAllocation.class
+com/geektrust/mymoney/model/portfolio/TestRecord.class
+com/geektrust/mymoney/model/portfolio/TestPortfolio.class
